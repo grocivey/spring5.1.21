@@ -511,6 +511,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
+			//MYTAG 去创建bean
 			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Finished creating instance of bean '" + beanName + "'");
@@ -551,6 +552,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
+			//MYTAG 默认无参构造创建初始对象，创建普通对象
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		Object bean = instanceWrapper.getWrappedInstance();
@@ -582,13 +584,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
+			//MYTAG lambda表达式加入到三级缓存，后面调用getObject时会推断是否需要创建代理对象
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
+			//MYTAG 填充属性，注入属性需要的bean
 			populateBean(beanName, mbd, instanceWrapper);
+			//MYTAG 一般是bean的拓展方法，比如Aware接口，在bean创建的时候会调用
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1289,7 +1294,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						getAccessControlContext());
 			}
 			else {
-				beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, this);
+				beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, this);//调用构造函数创建实例
 			}
 			BeanWrapper bw = new BeanWrapperImpl(beanInstance);
 			initBeanWrapper(bw);
@@ -1753,6 +1758,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}, getAccessControlContext());
 		}
 		else {
+			//调用bean实现的Aware接口的方法
 			invokeAwareMethods(beanName, bean);
 		}
 
@@ -1762,6 +1768,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
+			//调用实现InitializingBean接口的方法
 			invokeInitMethods(beanName, wrappedBean, mbd);
 		}
 		catch (Throwable ex) {

@@ -1,13 +1,34 @@
 buildscript {
 	repositories {
-		gradlePluginPortal()
-		maven { url "https://repo.spring.io/plugins-release" }
+//		maven { url "https://repo.spring.io/plugins-snapshot" }
+		maven { url 'https://maven.aliyun.com/repository/public' }
+		maven { url 'https://maven.aliyun.com/repository/jcenter' }
+		maven { url 'https://maven.aliyun.com/repository/google' }
+		maven { url "https://repo.spring.io/plugins-snapshot" }
+		maven { url 'https://maven.aliyun.com/repository/gradle-plugin'}
+		maven { url 'https://maven.aliyun.com/repository/apache-snapshots'}
+//		gradlePluginPortal()
+//		maven { url "https://repo.spring.io/plugins-release" }
 	}
 	dependencies {
-		classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
+		classpath("io.spring.gradle:propdeps-plugin:0.0.8-SNAPSHOT")
+//		classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
 		classpath("org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16")
 	}
 }
+//buildscript {
+//	repositories {
+////		gradlePluginPortal()
+//		maven { url "https://repo.maven.apache.org/maven2" }
+//		maven { url "https://plugins.gradle.org/m2" }
+//		maven { url "https://repo.spring.io/plugins-snapshot" }
+//		jcenter()
+//	}
+//	dependencies {
+//		classpath("io.spring.gradle:propdeps-plugin:0.0.8-SNAPSHOT")
+//		classpath("org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16")
+//	}
+//}
 
 // 3rd party plugin repositories can be configured in settings.gradle
 plugins {
@@ -147,7 +168,21 @@ configure(allprojects) { project ->
 		configDir = rootProject.file("src/checkstyle")
 	}
 
+//	repositories {
+//		maven { url "https://repo.maven.apache.org/maven2" }
+//		mavenCentral()
+//		maven { url "https://plugins.gradle.org/m2" }
+//		maven { url "https://repo.spring.io/libs-spring-framework-build" }
+////		maven { url "http://repo.springsource.org/plugins-release" }
+//	}
+
 	repositories {
+
+		maven { url 'https://plugins.gradle.org/m2' }
+		maven { url 'https://maven.aliyun.com/repository/public' }
+		maven { url 'https://maven.aliyun.com/repository/jcenter' }
+		maven { url 'https://maven.aliyun.com/repository/google' }
+		maven { url 'https://maven.aliyun.com/repository/gradle-plugin'}
 		mavenCentral()
 		maven { url "https://repo.spring.io/libs-spring-framework-build" }
 	}

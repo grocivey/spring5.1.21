@@ -522,6 +522,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
+			//MYTAG 加载了环境变量的真实bean
 			prepareBeanFactory(beanFactory);
 
 			try {
@@ -529,6 +530,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				postProcessBeanFactory(beanFactory);
 
 				// Invoke factory processors registered as beans in the context.
+				//MYTAG 创建了自定义的bean定义
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
@@ -541,12 +543,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
+				//MYTAG 默认啥都没干，留给子类拓展的
 				onRefresh();
 
 				// Check for listener beans and register them.
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+				//MYTAG 创建了自定义的bean实例
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
@@ -875,6 +879,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.freezeConfiguration();
 
 		// Instantiate all remaining (non-lazy-init) singletons.
+		//MYTAG 实例化非懒加载的bean
 		beanFactory.preInstantiateSingletons();
 	}
 

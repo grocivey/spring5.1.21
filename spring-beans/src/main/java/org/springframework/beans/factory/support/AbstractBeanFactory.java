@@ -244,6 +244,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		Object bean;
 
 		// Eagerly check singleton cache for manually registered singletons.
+		//MYTAG 尝试在三个缓存池中获取单例bean
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
@@ -316,8 +317,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				// Create bean instance.
 				if (mbd.isSingleton()) {
+					//MYTAG 获取bean，一般获取不到，会进入真正的实例化流程，流程走完后sharedInstance就是完整的bean
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
+							//MYTAG 创建bean实例
 							return createBean(beanName, mbd, args);
 						}
 						catch (BeansException ex) {

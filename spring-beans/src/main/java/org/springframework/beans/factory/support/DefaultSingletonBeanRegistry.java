@@ -215,6 +215,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		Assert.notNull(beanName, "Bean name must not be null");
 		synchronized (this.singletonObjects) {
 			Object singletonObject = this.singletonObjects.get(beanName);
+			//MYTAG 一级缓存获取不到单例bean后进入真实的实例化过程
 			if (singletonObject == null) {
 				if (this.singletonsCurrentlyInDestruction) {
 					throw new BeanCreationNotAllowedException(beanName,
@@ -224,6 +225,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				if (logger.isDebugEnabled()) {
 					logger.debug("Creating shared instance of singleton bean '" + beanName + "'");
 				}
+				//MYTAG 标记为bean状态为创建中，也就是将beanName加入singletonsCurrentlyInCreation的set集合中
 				beforeSingletonCreation(beanName);
 				boolean newSingleton = false;
 				boolean recordSuppressedExceptions = (this.suppressedExceptions == null);
@@ -231,6 +233,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					//MYTAG lambda表达式创建单例
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				}
@@ -254,12 +257,15 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (recordSuppressedExceptions) {
 						this.suppressedExceptions = null;
 					}
+					//MYTAG 标记为不在创建中，将beanName从 singletonsCurrentlyInCreation的set集合中移除
 					afterSingletonCreation(beanName);
 				}
 				if (newSingleton) {
+					//MYTAG 加入单例池，并请清理其他两个缓存
 					addSingleton(beanName, singletonObject);
 				}
 			}
+			//MYTAG 返回完成初始化后的单例bean
 			return singletonObject;
 		}
 	}
