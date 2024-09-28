@@ -6,13 +6,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 @ComponentScan
-//@Import(MyUser2.class )
+@Import(MyUser2.class )
 public class SpringTest{
 	public static void main(String[] args) {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SpringTest.class);
 
-		context.register(SpringTest.class);
-		context.refresh();
 
 		//获取bean
 		MyUser bean = context.getBean(MyUser.class);
@@ -27,6 +25,9 @@ public class SpringTest{
 		//获取bean
 		SpringTest bean3 = context.getBean(SpringTest.class);
 		bean3.sout();
+
+		Zhangyu zhangyu = context.getBean(Zhangyu.class);
+		System.out.println(zhangyu.name);
 
 		//获取事件发布器
 //		ApplicationEventPublisher publisher = context.getBean(ApplicationEventPublisher.class);

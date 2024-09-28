@@ -84,8 +84,17 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * {@link Configuration @Configuration} classes
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
+		//MYTAG 注册一些内置bean定义到beanDefinitionMap中
+		// ConfigurationClassPostProcessor(BeanFactoryPostProcessor)
+		// DefaultEventListenerFactory
+		// EventListenerMethodProcessor(BeanFactoryPostProcessor)
+		// AutowiredAnnotationBeanPostProcessor(BeanPostProcessor)
+		// CommonAnnotationBeanPostProcessor(BeanPostProcessor)
+		//MYTAG 设置标准环境变量信息
 		this();
+		//MYTAG 注册启动类的beanDefinition
 		register(componentClasses);
+		//MYTAG 刷新
 		refresh();
 	}
 

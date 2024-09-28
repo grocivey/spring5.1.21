@@ -871,6 +871,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		// Trigger post-initialization callback for all applicable beans...
 		for (String beanName : beanNames) {
 			Object singletonInstance = getSingleton(beanName);
+			//MYTAG 实现了SmartInitializingSingleton接口的bean，在bean实例化后调用afterSingletonsInstantiated方法
+			//MYTAG 这里面有一个EventListenerMethodProcessor用来方法事件监听器
 			if (singletonInstance instanceof SmartInitializingSingleton) {
 				SmartInitializingSingleton smartSingleton = (SmartInitializingSingleton) singletonInstance;
 				if (System.getSecurityManager() != null) {

@@ -516,30 +516,49 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
 			// Prepare this context for refreshing.
+			//MYTAG 刷新前期准备工作，做了一些清除或标记工作等
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
+			//MYTAG 获取beanFactory
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
-			//MYTAG 加载了环境变量的真实bean
+			//MYTAG 将ApplicationContextAwareProcessor,ApplicationListenerDetector加入到beanPostProcessors中、
+			//MYTAG 创建了环境变量的bean注册到单例池（手动注册，不触发beanPostProcessor），以及一些其他准备工作
 			prepareBeanFactory(beanFactory);
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
+				//MYTAG 啥都没干，留给子类拓展用的
 				postProcessBeanFactory(beanFactory);
 
 				// Invoke factory processors registered as beans in the context.
-				//MYTAG 创建了自定义的bean定义
+				//MYTAG 将以下5种类加入单例池子
+				//MYTAG 1、ConfigurationClassPostProcessor(BeanFactoryPostProcessor)
+				//MYTAG 解析配置类上的相关注解，并将相关需要的bean定义加入到beanDefinitionMap中
+				//MYTAG 2、ImportStack(内部类)
+				//MYTAG 将ImportAwareBeanPostProcessor(内部类BeanPostProcessor)加入到beanPostProcessors中
+				//MYTAG 3、EventListenerMethodProcessor(BeanFactoryPostProcessor)
+				//MYTAG 4、自定义的beanFactoryPostProcessor
+				//MYTAG 5、DefaultEventListenerFactory
+				//MYTAG 调用相关的beanFactoryPostProcessor
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
+				//MYTAG 默认注册CommonAnnotationBeanPostProcessor加入到单例池
+				//MYTAG 默认注册AutowiredAnnotationBeanPostProcessor加入到单例池
+				//MYTAG 默认注册BeanPostProcessorChecker(内部类)加入到单例池
+				//MYTAG 移除ApplicationListenerDetector后加入新的ApplicationListenerDetector到beanPostProcessors中
+				//MYTAG 自定义的beanPostProcessor加入到单例池
 				registerBeanPostProcessors(beanFactory);
 
 				// Initialize message source for this context.
+				//TODO 国际化相关暂时忽略不看
 				initMessageSource();
 
 				// Initialize event multicaster for this context.
+				//MYTAG 默认注册SimpleApplicationEventMulticaster广播器
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
@@ -547,10 +566,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				onRefresh();
 
 				// Check for listener beans and register them.
+				//MYTAG 注册自定义的listener未实例化信息到Multicaster的中applicationListenerBeans，
+				//MYTAG 真正的listener加入到Multicaster的中applicationListeners是需要等待
+				//MYTAG 所有bean实例化之后会统一判定是否将listener类型或方法listener加入到Multicaster的applicationListeners
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
-				//MYTAG 创建了自定义的bean实例
+				//MYTAG 创建了自定义的bean实例并放入单例池，解决循环依赖问题，并调用相关回调方法
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
@@ -638,6 +660,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see #getBeanFactory()
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+		//MYTAG 没干啥，设置了serializationId
 		refreshBeanFactory();
 		return getBeanFactory();
 	}
@@ -654,6 +677,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
 		// Configure the bean factory with context callbacks.
+		//MYTAG ApplicationContextAwareProcessor加入到beanPostProcessors中
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
 		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
@@ -670,6 +694,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.registerResolvableDependency(ApplicationContext.class, this);
 
 		// Register early post-processor for detecting inner beans as ApplicationListeners.
+		//MYTAG ApplicationListenerDetector加入到beanPostProcessors中
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found.

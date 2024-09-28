@@ -129,6 +129,7 @@ class ComponentScanAnnotationParser {
 				return declaringClass.equals(className);
 			}
 		});
+		//MYTAG 扫描ComponentScan注解对应的目录下的bean相关注解，加入到beanDefinitionMap中
 		return scanner.doScan(StringUtils.toStringArray(basePackages));
 	}
 

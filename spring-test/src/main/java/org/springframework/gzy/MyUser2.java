@@ -8,7 +8,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 //@Order(0)
 public class MyUser2 implements BeanNameAware {
 
@@ -39,7 +39,7 @@ public class MyUser2 implements BeanNameAware {
 
 	@Override
 	public void setBeanName(String name) {
-		System.out.println(name+"--------------");
+//		System.out.println(name+"--------------");
 	}
 
 

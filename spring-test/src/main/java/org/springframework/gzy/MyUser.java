@@ -6,13 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 // * @see BeanClassLoaderAware
 // * @see BeanFactoryAware
 // * @see InitializingBean
 @Component
-public class MyUser implements BeanNameAware, InitializingBean , BeanPostProcessor{
+public class MyUser implements BeanNameAware, InitializingBean{
 //	@Resource
 	@Autowired
 	private MyUser2 myUser2;
@@ -49,19 +51,18 @@ public class MyUser implements BeanNameAware, InitializingBean , BeanPostProcess
 
 	@Override
 	public void setBeanName(String name) {
-		System.out.println(name+"--------------");
+//		System.out.println(name+"--------------");
 	}
 
-	@Override
-	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-		System.out.println(beanName+"--postProcessAfterInitialization");
-		return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
+
+	@PostConstruct
+	public void init() {
+		System.out.println("init @PostConstruct");
 	}
 
-	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		System.out.println(beanName+"--postProcessBeforeInitialization");
-		return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
+	@PreDestroy
+	public void destroy() {
+		System.out.println("destroy @PreDestroy");
 	}
 
 

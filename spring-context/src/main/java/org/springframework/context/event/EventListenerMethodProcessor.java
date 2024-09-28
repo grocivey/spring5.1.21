@@ -145,7 +145,7 @@ public class EventListenerMethodProcessor
 		if (!this.nonAnnotatedClasses.contains(targetType) &&
 				!targetType.getName().startsWith("java") &&
 				!isSpringContainerClass(targetType)) {
-
+			//MYTAG 判定bean对应的方法上是不是有EventListener注解，有的话将其放入listeners
 			Map<Method, EventListener> annotatedMethods = null;
 			try {
 				annotatedMethods = MethodIntrospector.selectMethods(targetType,
@@ -175,6 +175,7 @@ public class EventListenerMethodProcessor
 					for (EventListenerFactory factory : factories) {
 						if (factory.supportsMethod(method)) {
 							Method methodToUse = AopUtils.selectInvocableMethod(method, context.getType(beanName));
+							//MYTAG 一般是将@EventListener注解的方法包装成ApplicationListenerMethodAdapter加入到listeners里面
 							ApplicationListener<?> applicationListener =
 									factory.createApplicationListener(beanName, targetType, methodToUse);
 							if (applicationListener instanceof ApplicationListenerMethodAdapter) {
