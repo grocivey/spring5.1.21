@@ -240,7 +240,7 @@ class ConfigurationClassParser {
 		// Recursively process the configuration class and its superclass hierarchy.
 		SourceClass sourceClass = asSourceClass(configClass);
 		do {
-			//MYTAG 处理配置类上的Component，PropertySources，ComponentScans，ImportResource注解
+			//MYTAG 处理配置类上的Component(包括包含Component的类)，PropertySources，ComponentScans，ImportResource注解
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass);
 		}
 		while (sourceClass != null);
@@ -301,9 +301,11 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @Import annotations
+		//MYTAG 处理@Import注解
 		processImports(configClass, sourceClass, getImports(sourceClass), true);
 
 		// Process any @ImportResource annotations
+		//MYTAG 处理@ImportResource注解
 		AnnotationAttributes importResource =
 				AnnotationConfigUtils.attributesFor(sourceClass.getMetadata(), ImportResource.class);
 		if (importResource != null) {

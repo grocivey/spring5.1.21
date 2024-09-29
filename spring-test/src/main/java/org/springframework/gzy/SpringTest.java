@@ -4,14 +4,21 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.web.context.ConfigurableWebApplicationContext;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import java.util.Enumeration;
 
 @ComponentScan
-@Import(MyUser2.class )
+@Import(MyUser2.class)
 public class SpringTest{
 	public static void main(String[] args) {
+
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SpringTest.class);
-
-
+//		ConfigurableWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+//		context.setServletConfig();
 		//获取bean
 		MyUser bean = context.getBean(MyUser.class);
 		String name = bean.getName();
